@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GeoSurvey India | Professional Land Survey Services</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --emerald: #1a6b4a;
+    --emerald-dark: #0e4a31;
+    --emerald-light: #2d9e72;
+    --gold: #c9960c;
+    --gold-light: #f0b429;
+    --cream: #f9f5ee;
+    --dark: #141c14;
+    --text: #2c3a2c;
+    --muted: #6b7c6b;
+    --white: #ffffff;
+    --border: rgba(26,107,74,0.15);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--white); overflow-x: hidden; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(20,28,20,0.97); backdrop-filter: blur(10px);
+    padding: 0 5%; display: flex; align-items: center; justify-content: space-between;
+    height: 70px; border-bottom: 1px solid rgba(201,150,12,0.2);
+  }
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .logo-icon { width: 42px; height: 42px; background: linear-gradient(135deg, var(--emerald-light), var(--emerald-dark)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; }
+  .logo-text span:first-child { display: block; font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: white; letter-spacing: 0.5px; }
+  .logo-text span:last-child { display: block; font-size: 10px; letter-spacing: 2px; color: var(--gold-light); text-transform: uppercase; }
+
+  .nav-links { display: flex; align-items: center; gap: 8px; list-style: none; }
+  .nav-links li { position: relative; }
+  .nav-links > li > a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 14px; font-weight: 500; padding: 8px 14px; border-radius: 6px; transition: all 0.2s; display: flex; align-items: center; gap: 5px; }
+  .nav-links > li > a:hover { color: white; background: rgba(255,255,255,0.08); }
+  .nav-links a .arrow { font-size: 10px; transition: transform 0.2s; }
+  .nav-links li:hover .arrow { transform: rotate(180deg); }
+
+  /* Desktop dropdown */
+  .desktop-dropdown {
+    position: absolute; top: calc(100% + 8px); left: 50%;
+    background: var(--dark); border: 1px solid rgba(201,150,12,0.3);
+    border-radius: 12px; padding: 8px; min-width: 240px;
+    opacity: 0; pointer-events: none;
+    transform: translateX(-50%) translateY(-6px);
+    transition: all 0.2s ease; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+  .nav-links li:hover .desktop-dropdown { opacity: 1; pointer-events: all; transform: translateX(-50%) translateY(0); }
+  .desktop-dropdown a { display: flex; align-items: center; gap: 10px; color: rgba(255,255,255,0.8); padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 400; transition: all 0.15s; text-decoration: none; }
+  .desktop-dropdown a:hover { background: rgba(45,158,114,0.15); color: var(--gold-light); }
+  .desktop-dropdown a .d-icon { width: 28px; height: 28px; border-radius: 6px; background: rgba(26,107,74,0.3); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+
+  .nav-cta { background: var(--gold) !important; color: var(--dark) !important; padding: 8px 20px !important; border-radius: 8px !important; font-weight: 600 !important; font-size: 13px !important; }
+  .nav-cta:hover { background: var(--gold-light) !important; }
+
+  /* Hamburger */
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; }
+  .hamburger span { width: 24px; height: 2px; background: white; border-radius: 2px; display: block; transition: all 0.3s; }
+
+  /* ── MOBILE MENU ── */
+  .mobile-menu { display: none; position: fixed; top: 70px; left: 0; right: 0; bottom: 0; background: #0d1a0d; z-index: 999; overflow-y: auto; padding-bottom: 40px; border-top: 1px solid rgba(255,255,255,0.08); }
+  .mobile-menu.open { display: block; }
+
+  .mob-nav-item { border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .mob-link {
+    display: flex; align-items: center; justify-content: space-between;
+    color: rgba(255,255,255,0.85); text-decoration: none; padding: 15px 6%;
+    font-size: 15px; font-weight: 500; background: none; border: none;
+    width: 100%; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: background 0.15s; text-align: left;
+  }
+  .mob-link:hover, .mob-link:focus { background: rgba(255,255,255,0.04); outline: none; }
+  .mob-arrow-icon { font-size: 11px; color: var(--gold-light); transition: transform 0.25s; display: inline-block; }
+  .mob-arrow-icon.rotated { transform: rotate(180deg); }
+
+  /* Mobile Services Sub-menu */
+  .mob-sub { max-height: 0; overflow: hidden; transition: max-height 0.38s cubic-bezier(0.4,0,0.2,1); background: rgba(255,255,255,0.03); }
+  .mob-sub.open { max-height: 520px; }
+  .mob-sub a { display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,0.72); text-decoration: none; padding: 13px 8% 13px 10%; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.04); transition: color 0.15s, background 0.15s; }
+  .mob-sub a:last-child { border-bottom: none; }
+  .mob-sub a:hover { color: var(--gold-light); background: rgba(45,158,114,0.08); }
+  .mob-sub .ms-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(26,107,74,0.35); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+
+  .mob-cta { display: block; margin: 20px 6% 0; background: var(--gold); color: var(--dark); text-align: center; padding: 14px; border-radius: 10px; font-weight: 700; font-size: 15px; text-decoration: none; }
+
+  /* ── HERO — two column layout ── */
+  .hero { min-height: 100vh; background: var(--dark); display: flex; align-items: stretch; position: relative; overflow: hidden; padding-top: 70px; }
+  .hero-grid-pattern { position: absolute; inset: 0; background-image: linear-gradient(rgba(45,158,114,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(45,158,114,0.06) 1px, transparent 1px); background-size: 60px 60px; z-index: 1; }
+  /* content LEFT, image RIGHT */
+  .hero-inner { position: relative; z-index: 2; width: 100%; display: grid; grid-template-columns: 1fr 1fr; min-height: calc(100vh - 70px); }
+
+  /* RIGHT image panel */
+  .hero-img-panel { position: relative; overflow: hidden; order: 2; }
+  .hero-img-panel img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+  .hero-img-overlay { position: absolute; inset: 0; background: linear-gradient(to left, rgba(14,74,49,0.2), rgba(20,28,20,0.55)); }
+  .hero-img-badge { position: absolute; bottom: 32px; right: 24px; background: rgba(10,10,10,0.78); border: 1px solid rgba(201,150,12,0.5); color: white; padding: 12px 18px; border-radius: 12px; backdrop-filter: blur(6px); }
+  .hero-img-badge strong { display: block; font-size: 13px; font-weight: 700; color: var(--gold-light); margin-bottom: 3px; }
+  .hero-img-badge span { font-size: 11px; color: rgba(255,255,255,0.65); }
+
+  /* LEFT content panel */
+  .hero-content { background: linear-gradient(135deg, rgba(14,74,49,0.94), rgba(20,28,20,0.98)); padding: 60px 5% 60px 6%; display: flex; flex-direction: column; justify-content: center; order: 1; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(201,150,12,0.15); border: 1px solid rgba(201,150,12,0.4); color: var(--gold-light); font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; margin-bottom: 28px; width: fit-content; animation: fadeUp 0.6s ease both; }
+  .hero-content h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.1rem, 3.5vw, 3.8rem); font-weight: 900; line-height: 1.12; color: white; margin-bottom: 22px; animation: fadeUp 0.6s 0.1s ease both; }
+  .hero-content h1 em { color: var(--gold-light); font-style: normal; }
+  .hero-content p { font-size: 15px; line-height: 1.8; color: rgba(255,255,255,0.7); margin-bottom: 36px; animation: fadeUp 0.6s 0.2s ease both; }
+  .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; animation: fadeUp 0.6s 0.3s ease both; }
+  .btn-primary { background: var(--gold); color: var(--dark); padding: 13px 28px; border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(201,150,12,0.3); }
+  .btn-outline { border: 1.5px solid rgba(255,255,255,0.3); color: white; padding: 13px 28px; border-radius: 10px; font-weight: 500; font-size: 14px; text-decoration: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+  .btn-outline:hover { border-color: white; background: rgba(255,255,255,0.08); }
+  .hero-stats { display: flex; gap: 32px; margin-top: 48px; flex-wrap: wrap; animation: fadeUp 0.6s 0.4s ease both; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--gold-light); display: block; }
+  .stat-label { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 1px; text-transform: uppercase; }
+
+  /* COMMON SECTION STYLES */
+  section { padding: 90px 5%; }
+  .section-tag { display: inline-block; background: rgba(26,107,74,0.1); color: var(--emerald); font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 16px; border: 1px solid rgba(26,107,74,0.2); }
+  .section-title { font-family: 'Playfair Display', serif; font-size: clamp(1.9rem, 4vw, 2.9rem); font-weight: 700; line-height: 1.2; color: var(--dark); margin-bottom: 16px; }
+  .section-sub { font-size: 16px; color: var(--muted); line-height: 1.7; max-width: 600px; }
+  .section-header { margin-bottom: 56px; }
+  .center { text-align: center; }
+  .center .section-sub { margin: 0 auto; }
+
+  /* ABOUT */
+  .about { background: var(--cream); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .about-img-wrap { position: relative; }
+  .about-img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 20px; }
+  .about-img-badge { position: absolute; bottom: -20px; right: -20px; background: var(--emerald); color: white; padding: 20px 24px; border-radius: 16px; text-align: center; box-shadow: 0 10px 30px rgba(26,107,74,0.3); }
+  .about-img-badge strong { font-family: 'Playfair Display', serif; font-size: 2.4rem; font-weight: 700; display: block; }
+  .about-img-badge span { font-size: 11px; letter-spacing: 1px; opacity: 0.8; }
+  .about-features { margin-top: 36px; display: flex; flex-direction: column; gap: 16px; }
+  .feature-row { display: flex; align-items: flex-start; gap: 14px; }
+  .feature-icon { width: 44px; height: 44px; border-radius: 10px; background: var(--emerald); color: white; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .feature-text strong { display: block; font-weight: 600; font-size: 15px; color: var(--dark); margin-bottom: 3px; }
+  .feature-text span { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* ── SERVICES — 1 row, 3 columns, image + content ── */
+  #services { background: var(--white); }
+  .services-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .svc-card { border: 1px solid var(--border); border-radius: 18px; overflow: hidden; background: white; transition: all 0.3s; display: flex; flex-direction: column; }
+  .svc-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(26,107,74,0.13); border-color: var(--emerald-light); }
+  .svc-img-wrap { position: relative; overflow: hidden; flex-shrink: 0; }
+  .svc-img { width: 100%; height: 195px; object-fit: cover; display: block; transition: transform 0.4s; }
+  .svc-card:hover .svc-img { transform: scale(1.05); }
+  .svc-img-tag { position: absolute; top: 14px; left: 14px; background: var(--emerald); color: white; font-size: 11px; font-weight: 700; letter-spacing: 0.8px; padding: 4px 12px; border-radius: 20px; }
+  .svc-body { padding: 22px 24px 26px; flex: 1; display: flex; flex-direction: column; }
+  .svc-ico-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .svc-ico { width: 36px; height: 36px; border-radius: 9px; background: rgba(26,107,74,0.1); display: flex; align-items: center; justify-content: center; font-size: 17px; }
+  .svc-body h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: var(--dark); margin-bottom: 10px; }
+  .svc-body p { font-size: 13px; color: var(--muted); line-height: 1.65; flex: 1; }
+  .svc-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+  .svc-tag { background: rgba(26,107,74,0.08); color: var(--emerald); font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; }
+  .svc-link { margin-top: 18px; font-size: 13px; font-weight: 600; color: var(--emerald); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
+  .svc-link:hover { color: var(--emerald-light); }
+
+  /* WHY US */
+  .why { background: var(--dark); color: white; }
+  .why .section-title { color: white; }
+  .why .section-sub { color: rgba(255,255,255,0.6); }
+  .why-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .why-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 28px; transition: all 0.3s; }
+  .why-card:hover { background: rgba(45,158,114,0.1); border-color: rgba(45,158,114,0.3); transform: translateY(-4px); }
+  .why-icon { font-size: 32px; margin-bottom: 18px; }
+  .why-card h3 { font-size: 15px; font-weight: 600; color: white; margin-bottom: 10px; }
+  .why-card p { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+  /* GALLERY */
+  .gallery-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 250px 250px; gap: 16px; }
+  .gallery-item { border-radius: 14px; overflow: hidden; position: relative; }
+  .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+  .gallery-item:hover img { transform: scale(1.05); }
+  .gallery-item:first-child { grid-row: 1 / 3; }
+  .gallery-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(14,74,49,0.7), transparent); opacity: 0; transition: opacity 0.3s; display: flex; align-items: flex-end; padding: 20px; }
+  .gallery-item:hover .gallery-overlay { opacity: 1; }
+  .gallery-overlay span { color: white; font-size: 13px; font-weight: 600; }
+
+  /* PROCESS */
+  .process { background: var(--cream); }
+  .process-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; position: relative; }
+  .process-steps::before { content: ''; position: absolute; top: 30px; left: 10%; right: 10%; height: 2px; background: linear-gradient(90deg, var(--emerald), var(--gold)); z-index: 0; }
+  .step { text-align: center; padding: 0 12px; position: relative; z-index: 1; }
+  .step-circle { width: 60px; height: 60px; border-radius: 50%; background: var(--emerald); color: white; font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 4px solid var(--cream); box-shadow: 0 0 0 3px var(--emerald); }
+  .step h4 { font-size: 14px; font-weight: 600; color: var(--dark); margin-bottom: 8px; }
+  .step p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* TESTIMONIALS */
+  .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .testi-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 28px; }
+  .testi-stars { color: var(--gold); font-size: 14px; margin-bottom: 16px; }
+  .testi-text { font-size: 14px; color: var(--text); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+  .testi-author { display: flex; align-items: center; gap: 12px; }
+  .testi-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+  .testi-info strong { display: block; font-size: 14px; font-weight: 600; color: var(--dark); }
+  .testi-info span { font-size: 12px; color: var(--muted); }
+
+  /* CONTACT */
+  .contact { background: var(--emerald-dark); color: white; }
+  .contact .section-title { color: white; }
+  .contact .section-sub { color: rgba(255,255,255,0.65); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+  .contact-form { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 40px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .form-group label { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.8); }
+  .form-group input, .form-group select, .form-group textarea { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 12px 16px; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; transition: all 0.2s; resize: vertical; }
+  .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.35); }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--gold-light); background: rgba(255,255,255,0.12); }
+  .form-group select option { background: var(--emerald-dark); color: white; }
+  .btn-submit { width: 100%; background: var(--gold); color: var(--dark); border: none; padding: 14px; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.2s; }
+  .btn-submit:hover { background: var(--gold-light); transform: translateY(-2px); }
+  .contact-info { display: flex; flex-direction: column; gap: 32px; }
+  .info-item { display: flex; gap: 16px; align-items: flex-start; }
+  .info-icon { width: 48px; height: 48px; border-radius: 12px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .info-item h4 { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.5); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .info-item p { font-size: 15px; color: white; line-height: 1.5; }
+
+  /* FOOTER */
+  footer { background: var(--dark); color: rgba(255,255,255,0.5); padding: 60px 5% 30px; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 50px; margin-bottom: 50px; }
+  .footer-brand p { font-size: 13px; line-height: 1.7; margin-top: 16px; max-width: 280px; }
+  .footer-col h4 { color: white; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 13px; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--gold-light); }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; flex-wrap: wrap; gap: 8px; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── SERVICE MODAL ── */
+  .svc-card { cursor: pointer; }
+  .modal-backdrop {
+    display: none; position: fixed; inset: 0; z-index: 2000;
+    background: rgba(10,18,10,0.82); backdrop-filter: blur(6px);
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal-box {
+    background: var(--white); border-radius: 20px; max-width: 780px; width: 100%;
+    max-height: 90vh; overflow-y: auto;
+    animation: modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+    position: relative;
+  }
+  @keyframes modalIn { from { opacity:0; transform:scale(0.92) translateY(20px); } to { opacity:1; transform:scale(1) translateY(0); } }
+  .modal-close {
+    position: absolute; top: 16px; right: 16px; z-index: 10;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(0,0,0,0.08); border: none; cursor: pointer;
+    font-size: 18px; color: var(--dark); display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .modal-close:hover { background: rgba(0,0,0,0.15); }
+  .modal-hero { position: relative; height: 240px; overflow: hidden; border-radius: 20px 20px 0 0; flex-shrink: 0; }
+  .modal-hero img { width: 100%; height: 100%; object-fit: cover; }
+  .modal-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(14,74,49,0.75), transparent 60%); }
+  .modal-hero-label { position: absolute; bottom: 20px; left: 24px; }
+  .modal-hero-label h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: white; }
+  .modal-hero-label span { font-size: 13px; color: rgba(255,255,255,0.75); }
+  .modal-body { padding: 32px 36px 36px; }
+  .modal-intro { font-size: 15px; color: var(--muted); line-height: 1.75; margin-bottom: 28px; }
+  .modal-features { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
+  .modal-feat { display: flex; align-items: flex-start; gap: 10px; background: var(--cream); border-radius: 10px; padding: 14px 16px; }
+  .modal-feat-icon { font-size: 20px; flex-shrink: 0; }
+  .modal-feat strong { display: block; font-size: 14px; font-weight: 600; color: var(--dark); margin-bottom: 2px; }
+  .modal-feat span { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .modal-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+  .modal-tag { background: rgba(26,107,74,0.09); color: var(--emerald); font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 20px; border: 1px solid rgba(26,107,74,0.2); }
+  .modal-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+  .modal-cta a { padding: 12px 28px; border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none; transition: all 0.2s; }
+  .modal-cta .cta-primary { background: var(--emerald); color: white; }
+  .modal-cta .cta-primary:hover { background: var(--emerald-light); transform: translateY(-1px); }
+  .modal-cta .cta-outline { border: 1.5px solid var(--border); color: var(--emerald); }
+  .modal-cta .cta-outline:hover { border-color: var(--emerald); background: rgba(26,107,74,0.05); }
+  @media (max-width: 600px) {
+    .modal-features { grid-template-columns: 1fr; }
+    .modal-body { padding: 22px 20px 28px; }
+    .modal-hero { height: 180px; }
+    .modal-hero-label h2 { font-size: 1.3rem; }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1100px) {
+    .services-cards { grid-template-columns: repeat(3, 1fr); }
+    .why-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    /* hero stacks on mobile — content first, image second */
+    .hero-inner { grid-template-columns: 1fr; }
+    .hero-img-panel { order: 2; min-height: 260px; max-height: 320px; }
+    .hero-content { order: 1; padding: 40px 6%; }
+    .hero-stats { margin-top: 30px; gap: 22px; }
+    .about-grid { grid-template-columns: 1fr; gap: 50px; }
+    .about-img-badge { right: 0; }
+    .services-cards { grid-template-columns: repeat(2, 1fr); }
+    .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+    .gallery-item:first-child { grid-row: auto; }
+    .process-steps { grid-template-columns: 1fr 1fr; gap: 28px; }
+    .process-steps::before { display: none; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    .form-row { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 30px; }
+  }
+  @media (max-width: 560px) {
+    .services-cards { grid-template-columns: 1fr; }
+    .why-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .hero-content h1 { font-size: 1.9rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-icon">⊕</div>
+    <div class="logo-text">
+      <span>GeoSurvey India</span>
+      <span>Precision Land Surveys</span>
+    </div>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li>
+      <a href="#services">Services <span class="arrow">▼</span></a>
+      <div class="desktop-dropdown">
+        <a href="#services"><div class="d-icon">🗺️</div><span>Land Survey</span></a>
+        <a href="#services"><div class="d-icon">📐</div><span>Topography Survey</span></a>
+        <a href="#services"><div class="d-icon">🏗️</div><span>Building Survey</span></a>
+        <a href="#services"><div class="d-icon">🛣️</div><span>Road Survey</span></a>
+        <a href="#services"><div class="d-icon">🌊</div><span>Contour Survey</span></a>
+        <a href="#services"><div class="d-icon">🌾</div><span>Field Bandh Survey</span></a>
+      </div>
+    </li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#contact" class="nav-cta">Get Quote</a></li>
+  </ul>
+
+  <button class="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+    <span id="hb1"></span><span id="hb2"></span><span id="hb3"></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+
+  <div class="mob-nav-item">
+    <a href="#about" class="mob-link" onclick="closeMenu()">About Us</a>
+  </div>
+
+  <!-- Services with expandable dropdown -->
+  <div class="mob-nav-item">
+    <button class="mob-link" id="mobSvcBtn" onclick="toggleMobSvc()">
+      Our Services
+      <span class="mob-arrow-icon" id="mobSvcArrow">▼</span>
+    </button>
+    <div class="mob-sub" id="mobSub">
+      <a href="#services" onclick="closeMenu()"><div class="ms-icon">🗺️</div>Land Survey</a>
+      <a href="#services" onclick="closeMenu()"><div class="ms-icon">📐</div>Topography Survey</a>
+      <a href="#services" onclick="closeMenu()"><div class="ms-icon">🏗️</div>Building Survey</a>
+      <a href="#services" onclick="closeMenu()"><div class="ms-icon">🛣️</div>Road Survey</a>
+      <a href="#services" onclick="closeMenu()"><div class="ms-icon">🌊</div>Contour Survey</a>
+      <a href="#services" onclick="closeMenu()"><div class="ms-icon">🌾</div>Field Bandh Survey</a>
+    </div>
+  </div>
+
+  <div class="mob-nav-item"><a href="#process" class="mob-link" onclick="closeMenu()">Our Process</a></div>
+  <div class="mob-nav-item"><a href="#gallery" class="mob-link" onclick="closeMenu()">Gallery</a></div>
+  <div class="mob-nav-item"><a href="#testimonials" class="mob-link" onclick="closeMenu()">Testimonials</a></div>
+  <div class="mob-nav-item"><a href="#contact" class="mob-link" onclick="closeMenu()">Contact</a></div>
+  <a href="#contact" class="mob-cta" onclick="closeMenu()">Request a Free Quote →</a>
+</div>
+
+<!-- HERO — image left, content right -->
+<section class="hero" id="home">
+  <div class="hero-grid-pattern"></div>
+  <div class="hero-inner">
+
+    <!-- LEFT: Land survey image -->
+    <div class="hero-img-panel">
+      <img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=1000&q=85" alt="Surveyor using total station in the field">
+      <div class="hero-img-overlay"></div>
+      <div class="hero-img-badge">
+        <strong>📍 Field Survey in Progress</strong>
+        <span>RTK GPS · Total Station · UAV Drone</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: Text content -->
+    <div class="hero-content">
+      <div class="hero-badge">🏆 Trusted Since 2002 &nbsp;·&nbsp; ISO Certified</div>
+      <h1>Precision <em>Land Surveys</em><br>Across India</h1>
+      <p>GeoSurvey India delivers accurate, technology-driven land and topographic survey solutions for government bodies, real estate developers, and infrastructure projects nationwide.</p>
+      <div class="hero-btns">
+        <a href="#services" class="btn-primary">Explore Services ↓</a>
+        <a href="#contact" class="btn-outline">Request a Survey</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">2400+</span><span class="stat-label">Projects Done</span></div>
+        <div class="stat"><span class="stat-num">22+</span><span class="stat-label">States Covered</span></div>
+        <div class="stat"><span class="stat-num">98%</span><span class="stat-label">Accuracy Rate</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-grid">
+    <div class="about-img-wrap">
+      <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=700&q=80" alt="Survey team at work" class="about-img">
+      <div class="about-img-badge"><strong>20+</strong><span>Years of Excellence</span></div>
+    </div>
+    <div>
+      <span class="section-tag">Who We Are</span>
+      <h2 class="section-title">India's Most Trusted<br>Survey Professionals</h2>
+      <p class="section-sub">Founded in 2002, GeoSurvey India has grown into one of the country's foremost land survey agencies, serving clients from Karnataka to Kashmir with unmatched precision and expertise.</p>
+      <div class="about-features">
+        <div class="feature-row">
+          <div class="feature-icon">🛰️</div>
+          <div class="feature-text"><strong>Advanced GPS & Drone Technology</strong><span>We use the latest RTK GPS, total stations, and UAV drones for centimetre-level accuracy in every project.</span></div>
+        </div>
+        <div class="feature-row">
+          <div class="feature-icon">📜</div>
+          <div class="feature-text"><strong>Government-Approved & Certified</strong><span>All surveyors are licensed by the Survey of India, with ISO 9001:2015 certification for quality management.</span></div>
+        </div>
+        <div class="feature-row">
+          <div class="feature-icon">⏱️</div>
+          <div class="feature-text"><strong>On-Time Project Delivery</strong><span>Our streamlined workflows and experienced field teams ensure your survey is completed within agreed timelines.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES — 3 columns, image + content, clickable -->
+<section id="services">
+  <div class="section-header center">
+    <span class="section-tag">What We Offer</span>
+    <h2 class="section-title">Our Survey Services</h2>
+    <p class="section-sub">Six specialised survey services — click any card to explore full details, features, and deliverables.</p>
+  </div>
+
+  <div class="services-cards">
+
+    <div class="svc-card" onclick="openModal('land')">
+      <div class="svc-img-wrap">
+        <img class="svc-img" src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=80" alt="Land Survey">
+        <span class="svc-img-tag">Land Survey</span>
+      </div>
+      <div class="svc-body">
+        <div class="svc-ico-row"><div class="svc-ico">🗺️</div></div>
+        <h3>Land Survey</h3>
+        <p>Precise boundary identification using government revenue records, GPS control points, and total station measurements. Legally valid for property registration, dispute resolution, and sales transactions.</p>
+        <div class="svc-tags"><span class="svc-tag">Boundary Marking</span><span class="svc-tag">Plot Measurement</span><span class="svc-tag">CAD Drawings</span></div>
+        <span class="svc-link">View Details →</span>
+      </div>
+    </div>
+
+    <div class="svc-card" onclick="openModal('topo')">
+      <div class="svc-img-wrap">
+        <img class="svc-img" src="https://images.unsplash.com/photo-1530569673472-307dc017a82d?w=600&q=80" alt="Topography Survey">
+        <span class="svc-img-tag">Topography</span>
+      </div>
+      <div class="svc-body">
+        <div class="svc-ico-row"><div class="svc-ico">📐</div></div>
+        <h3>Topography Survey</h3>
+        <p>High-resolution topographic maps showing elevation contours, terrain profiles, and natural features. Delivered as AutoCAD or GIS-compatible files for architects, civil engineers, and urban planners.</p>
+        <div class="svc-tags"><span class="svc-tag">DEM/DTM Models</span><span class="svc-tag">Drone Mapping</span><span class="svc-tag">GIS Layers</span></div>
+        <span class="svc-link">View Details →</span>
+      </div>
+    </div>
+
+    <div class="svc-card" onclick="openModal('build')">
+      <div class="svc-img-wrap">
+        <img class="svc-img" src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&q=80" alt="Building Survey">
+        <span class="svc-img-tag">Building</span>
+      </div>
+      <div class="svc-body">
+        <div class="svc-ico-row"><div class="svc-ico">🏗️</div></div>
+        <h3>Building Survey</h3>
+        <p>From new construction setouts to as-built verification, ensuring your structure aligns with approved plans. Covers column grid layout, verticality checks, and floor levels for RERA compliance.</p>
+        <div class="svc-tags"><span class="svc-tag">As-Built Plans</span><span class="svc-tag">RERA Compliance</span><span class="svc-tag">Setout Survey</span></div>
+        <span class="svc-link">View Details →</span>
+      </div>
+    </div>
+
+    <div class="svc-card" onclick="openModal('road')">
+      <div class="svc-img-wrap">
+        <img class="svc-img" src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&q=80" alt="Road Survey">
+        <span class="svc-img-tag">Road Survey</span>
+      </div>
+      <div class="svc-body">
+        <div class="svc-ico-row"><div class="svc-ico">🛣️</div></div>
+        <h3>Road Survey</h3>
+        <p>Complete road survey solutions including longitudinal sections, cross-sections, earthwork calculations, and alignment drawings. Used by PWD, NHAI, and municipal bodies for road projects.</p>
+        <div class="svc-tags"><span class="svc-tag">L & X Sections</span><span class="svc-tag">ROW Marking</span><span class="svc-tag">Earthwork Volumes</span></div>
+        <span class="svc-link">View Details →</span>
+      </div>
+    </div>
+
+    <div class="svc-card" onclick="openModal('contour')">
+      <div class="svc-img-wrap">
+        <img class="svc-img" src="https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=600&q=80" alt="Contour Survey">
+        <span class="svc-img-tag">Contour</span>
+      </div>
+      <div class="svc-body">
+        <div class="svc-ico-row"><div class="svc-ico">🌊</div></div>
+        <h3>Contour Survey</h3>
+        <p>Accurate contour maps at 0.5m, 1m, or 2m intervals. Essential for drainage design, cut-and-fill calculations, watershed analysis, and irrigation planning in agricultural and infrastructure projects.</p>
+        <div class="svc-tags"><span class="svc-tag">Drainage Analysis</span><span class="svc-tag">Watershed Mapping</span><span class="svc-tag">Irrigation Design</span></div>
+        <span class="svc-link">View Details →</span>
+      </div>
+    </div>
+
+    <div class="svc-card" onclick="openModal('bandh')">
+      <div class="svc-img-wrap">
+        <img class="svc-img" src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&q=80" alt="Field Bandh Survey">
+        <span class="svc-img-tag">Field Bandh</span>
+      </div>
+      <div class="svc-body">
+        <div class="svc-ico-row"><div class="svc-ico">🌾</div></div>
+        <h3>Field Bandh Survey</h3>
+        <p>Agricultural land management covering bund locations, khasra parcel sub-division, irrigation channel alignment, and boundary demarcation. Working with farmers and gram panchayats.</p>
+        <div class="svc-tags"><span class="svc-tag">Khasra Division</span><span class="svc-tag">Bund Mapping</span><span class="svc-tag">Canal Survey</span></div>
+        <span class="svc-link">View Details →</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── SERVICE MODALS ── -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeModalOutside(event)">
+  <div class="modal-box" id="modalBox">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-hero">
+      <img id="modalImg" src="" alt="">
+      <div class="modal-hero-overlay"></div>
+      <div class="modal-hero-label">
+        <h2 id="modalTitle"></h2>
+        <span id="modalSubtitle"></span>
+      </div>
+    </div>
+    <div class="modal-body">
+      <p class="modal-intro" id="modalIntro"></p>
+      <div class="modal-features" id="modalFeatures"></div>
+      <div class="modal-tags" id="modalTags"></div>
+      <div class="modal-cta">
+        <a href="#contact" class="cta-primary" onclick="closeModal()">Request a Quote →</a>
+        <a href="#contact" class="cta-outline" onclick="closeModal()">Call Us Now</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WHY US -->
+<section class="why" id="why">
+  <div class="section-header">
+    <span class="section-tag" style="background:rgba(240,180,41,0.15);color:var(--gold-light);border-color:rgba(240,180,41,0.3);">Why Choose Us</span>
+    <h2 class="section-title">Built on Accuracy.<br>Driven by Technology.</h2>
+    <p class="section-sub">We combine licensed expertise with modern survey instruments to deliver results you can build on—literally.</p>
+  </div>
+  <div class="why-grid">
+    <div class="why-card"><div class="why-icon">🛰️</div><h3>RTK GPS Accuracy</h3><p>Our Real-Time Kinematic GPS equipment delivers sub-centimetre accuracy for boundary and topographic work.</p></div>
+    <div class="why-card"><div class="why-icon">🤖</div><h3>Drone-Powered Mapping</h3><p>UAV-based aerial surveys allow us to cover large areas quickly with photogrammetric precision.</p></div>
+    <div class="why-card"><div class="why-icon">📋</div><h3>Legally Valid Reports</h3><p>All survey reports are stamped by licensed surveyors and accepted by revenue courts, RERA, and municipal bodies.</p></div>
+    <div class="why-card"><div class="why-icon">🌐</div><h3>Pan-India Operations</h3><p>With field teams across 22 states, we can mobilise within 48 hours for any project site in India.</p></div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="section-header">
+    <span class="section-tag">Field Work</span>
+    <h2 class="section-title">Survey in Action</h2>
+    <p class="section-sub">A glimpse into our fieldwork across terrain types, from farmlands and highways to high-rise construction sites.</p>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=900&q=80" alt="Aerial farmland"><div class="gallery-overlay"><span>Aerial Farmland Survey</span></div></div>
+    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=500&q=80" alt="Construction site"><div class="gallery-overlay"><span>Construction Setout</span></div></div>
+    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=500&q=80" alt="Drone operation"><div class="gallery-overlay"><span>UAV Drone Mapping</span></div></div>
+    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=500&q=80" alt="Highway survey"><div class="gallery-overlay"><span>Highway Alignment</span></div></div>
+    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1530569673472-307dc017a82d?w=500&q=80" alt="Mountain terrain"><div class="gallery-overlay"><span>Terrain Mapping</span></div></div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process" id="process">
+  <div class="section-header center">
+    <span class="section-tag">How It Works</span>
+    <h2 class="section-title">Simple 5-Step Survey Process</h2>
+    <p class="section-sub">We've refined our project workflow to give you clear milestones and transparent progress at every stage.</p>
+  </div>
+  <div class="process-steps">
+    <div class="step"><div class="step-circle">1</div><h4>Site Inquiry</h4><p>Share project details, location, and requirements via call or online form.</p></div>
+    <div class="step"><div class="step-circle">2</div><h4>Feasibility Check</h4><p>Our team reviews existing records and prepares a detailed scope proposal.</p></div>
+    <div class="step"><div class="step-circle">3</div><h4>Field Survey</h4><p>Licensed surveyors mobilise to site with GPS, total station, or drone gear.</p></div>
+    <div class="step"><div class="step-circle">4</div><h4>Data Processing</h4><p>Raw field data is processed into CAD, GIS, or PDF deliverables.</p></div>
+    <div class="step"><div class="step-circle">5</div><h4>Report Delivery</h4><p>Final stamped reports and digital files delivered securely.</p></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section-header center">
+    <span class="section-tag">Client Stories</span>
+    <h2 class="section-title">What Our Clients Say</h2>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"GeoSurvey India completed our 120-acre topographic survey in just 6 days with a level of precision we hadn't seen from other agencies. The drone-based mapping saved us weeks of traditional survey time."</p>
+      <div class="testi-author"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="Rajiv Mehta" class="testi-avatar"><div class="testi-info"><strong>Rajiv Mehta</strong><span>Project Director, Bhumi Infra Ltd.</span></div></div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Their Field Bandh survey reports were accepted by the district collector without a single revision. Professional, timely, and deeply knowledgeable about revenue law and local land records."</p>
+      <div class="testi-author"><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&q=80" alt="Anitha Krishnan" class="testi-avatar"><div class="testi-info"><strong>Anitha Krishnan</strong><span>District Agriculture Officer, Karnataka</span></div></div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"We used GeoSurvey for building setout work on our 22-storey residential tower in Pune. They were precise to the millimetre and their coordination with our structural engineers was seamless throughout."</p>
+      <div class="testi-author"><img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80" alt="Suresh Patil" class="testi-avatar"><div class="testi-info"><strong>Suresh Patil</strong><span>MD, Skyline Constructions Pvt. Ltd.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-grid">
+    <div>
+      <span class="section-tag" style="background:rgba(240,180,41,0.15);color:var(--gold-light);border-color:rgba(240,180,41,0.3);">Get In Touch</span>
+      <h2 class="section-title">Request a<br>Free Survey Quote</h2>
+      <p class="section-sub">Fill in your project details and one of our survey engineers will contact you within 24 hours with a customised quote and timeline.</p>
+      <div class="contact-info" style="margin-top:40px;">
+        <div class="info-item"><div class="info-icon">📞</div><div><h4>Phone</h4><p>+91 98765 43210<br>+91 80 2345 6789</p></div></div>
+        <div class="info-item"><div class="info-icon">📧</div><div><h4>Email</h4><p>info@geosurveyindia.in<br>support@geosurveyindia.in</p></div></div>
+        <div class="info-item"><div class="info-icon">📍</div><div><h4>Head Office</h4><p>42, Survey Layout, Sadashivanagar<br>Bengaluru – 560080, Karnataka</p></div></div>
+      </div>
+    </div>
+    <div class="contact-form">
+      <div class="form-row">
+        <div class="form-group"><label>Full Name</label><input type="text" placeholder="Your full name"></div>
+        <div class="form-group"><label>Phone Number</label><input type="tel" placeholder="+91 XXXXX XXXXX"></div>
+      </div>
+      <div class="form-group"><label>Email Address</label><input type="email" placeholder="your@email.com"></div>
+      <div class="form-group">
+        <label>Survey Type Required</label>
+        <select>
+          <option value="" disabled selected>Select a service</option>
+          <option>Land Survey</option><option>Topography Survey</option>
+          <option>Building Survey</option><option>Road Survey</option>
+          <option>Contour Survey</option><option>Field Bandh Survey</option>
+          <option>Multiple / Not Sure</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Project Location & Details</label><textarea rows="4" placeholder="Describe your site location, approximate area, and project purpose..."></textarea></div>
+      <button class="btn-submit" onclick="submitForm()">Submit Enquiry →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo">
+        <div class="logo-icon">⊕</div>
+        <div class="logo-text"><span>GeoSurvey India</span><span>Precision Land Surveys</span></div>
+      </a>
+      <p>India's trusted land survey partner since 2002. Delivering precision, technology, and legal compliance across 22 states.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#services">Land Survey</a></li><li><a href="#services">Topography Survey</a></li>
+        <li><a href="#services">Building Survey</a></li><li><a href="#services">Road Survey</a></li>
+        <li><a href="#services">Contour Survey</a></li><li><a href="#services">Field Bandh Survey</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#about">About Us</a></li><li><a href="#process">Our Process</a></li>
+        <li><a href="#gallery">Gallery</a></li><li><a href="#testimonials">Testimonials</a></li>
+        <li><a href="#contact">Careers</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Disclaimer</a></li><li><a href="#contact">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 GeoSurvey India. All rights reserved.</span>
+    <span>ISO 9001:2015 Certified &nbsp;·&nbsp; Licensed by Survey of India</span>
+  </div>
+</footer>
+
+<script>
+  /* HAMBURGER */
+  let menuOpen = false;
+  function toggleMenu() {
+    menuOpen = !menuOpen;
+    document.getElementById('mobileMenu').classList.toggle('open', menuOpen);
+    const s1 = document.getElementById('hb1'), s2 = document.getElementById('hb2'), s3 = document.getElementById('hb3');
+    if (menuOpen) {
+      s1.style.cssText = 'transform:rotate(45deg) translate(5px,5px)';
+      s2.style.opacity = '0';
+      s3.style.cssText = 'transform:rotate(-45deg) translate(5px,-5px)';
+    } else { s1.style.cssText = s2.style.cssText = s3.style.cssText = ''; }
+  }
+  function closeMenu() {
+    menuOpen = false;
+    document.getElementById('mobileMenu').classList.remove('open');
+    ['hb1','hb2','hb3'].forEach(id => document.getElementById(id).style.cssText = '');
+    mobSvcOpen = false;
+    document.getElementById('mobSub').classList.remove('open');
+    document.getElementById('mobSvcArrow').classList.remove('rotated');
+  }
+
+  /* MOBILE SERVICES SUBMENU */
+  let mobSvcOpen = false;
+  function toggleMobSvc() {
+    mobSvcOpen = !mobSvcOpen;
+    document.getElementById('mobSub').classList.toggle('open', mobSvcOpen);
+    document.getElementById('mobSvcArrow').classList.toggle('rotated', mobSvcOpen);
+  }
+
+  /* ── SERVICE MODAL DATA ── */
+  const services = {
+    land: {
+      title: 'Land Survey',
+      subtitle: 'Boundary Demarcation & Property Measurement',
+      img: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=900&q=85',
+      intro: 'Our Land Survey service provides legally admissible boundary identification and plot measurement using government revenue records, GPS control points, and total station equipment. Suitable for agricultural plots, urban properties, and large industrial land parcels across all Indian states.',
+      features: [
+        { icon: '📍', title: 'Boundary Marking', desc: 'Physical demarcation with concrete pillars or iron pegs per revenue guidelines.' },
+        { icon: '📏', title: 'Plot Area Calculation', desc: 'Precise area computation with digital theodolite and GPS for legal purposes.' },
+        { icon: '📄', title: 'Mutation & Title Reports', desc: 'Documentation aligned with state revenue records and RTC/Pahani extracts.' },
+        { icon: '🖥️', title: 'CAD Drawings', desc: 'AutoCAD site plans and layout maps with coordinates and scale markings.' },
+      ],
+      tags: ['Boundary Demarcation', 'Plot Measurement', 'Revenue Record Verification', 'CAD/GIS Drawings', 'Mutation Reports', 'Property Registration']
+    },
+    topo: {
+      title: 'Topography Survey',
+      subtitle: '3D Terrain Mapping & Elevation Modelling',
+      img: 'https://images.unsplash.com/photo-1530569673472-307dc017a82d?w=900&q=85',
+      intro: 'Our Topography Survey service produces detailed 3D terrain models and contour maps of any site — from small urban plots to thousands of acres of rural or hilly terrain. Using UAV drone photogrammetry and total station traverses, we generate highly accurate data for design and planning.',
+      features: [
+        { icon: '🛸', title: 'UAV Drone Mapping', desc: 'Aerial photogrammetry producing 2cm GSD ortho-photos and point clouds.' },
+        { icon: '📊', title: 'DEM & DTM Generation', desc: 'Digital Elevation and Terrain Models for engineering design software.' },
+        { icon: '🗺️', title: 'Contour Maps', desc: 'Contour intervals from 0.25m to 2m delivered in AutoCAD or PDF format.' },
+        { icon: '🌐', title: 'GIS Integration', desc: 'Shapefiles and raster layers compatible with ArcGIS, QGIS, and Civil 3D.' },
+      ],
+      tags: ['UAV Drone Mapping', 'DEM/DTM Models', 'Contour Lines', 'GIS Shapefiles', 'Ortho-Photography', 'Civil 3D Compatible']
+    },
+    build: {
+      title: 'Building Survey',
+      subtitle: 'Construction Setout, As-Built & RERA Compliance',
+      img: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=900&q=85',
+      intro: 'Our Building Survey team specialises in precision setout and verification for construction projects of all scales — from individual homes to multi-storey commercial complexes. We ensure structural elements are positioned exactly per approved drawings, supporting RERA submissions and municipal approvals.',
+      features: [
+        { icon: '📐', title: 'Column Grid Setout', desc: 'Sub-millimetre accuracy column positioning using robotic total stations.' },
+        { icon: '📋', title: 'As-Built Drawings', desc: 'Existing structure documentation for renovation, legal, or RERA purposes.' },
+        { icon: '📏', title: 'Verticality Checks', desc: 'Plumb-line assessment for shear walls, columns, and curtain wall systems.' },
+        { icon: '🏠', title: 'Floor Level Surveys', desc: 'Slab-to-slab level monitoring with precision digital levels.' },
+      ],
+      tags: ['Construction Setout', 'As-Built Documentation', 'RERA Compliance', 'Verticality Check', 'Floor Level Survey', 'Municipal Approval']
+    },
+    road: {
+      title: 'Road Survey',
+      subtitle: 'Highway Alignment, Cross-Sections & Earthwork',
+      img: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=900&q=85',
+      intro: 'From village roads to national highways, our Road Survey team delivers complete topographic and engineering survey data for road design, construction, and rehabilitation. We work with PWD, NHAI contractors, state highway authorities, and private developers across India.',
+      features: [
+        { icon: '📈', title: 'L-Section & Profile', desc: 'Longitudinal sections at regular chainage with benchmark elevations.' },
+        { icon: '📉', title: 'Cross-Sections', desc: 'Cross-section data at 10m, 20m, or 50m intervals for earthwork volumes.' },
+        { icon: '🔢', title: 'Earthwork Volumes', desc: 'Cut and fill volume computation using prismoidal formula in Excel/software.' },
+        { icon: '🚧', title: 'ROW Marking', desc: 'Right-of-Way demarcation with physical pillars and coordinate lists.' },
+      ],
+      tags: ['L-Section Drawings', 'Cross-Section Data', 'Earthwork Volumes', 'ROW Demarcation', 'Alignment Design', 'PWD / NHAI Projects']
+    },
+    contour: {
+      title: 'Contour Survey',
+      subtitle: 'Elevation Mapping for Drainage & Irrigation Planning',
+      img: 'https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=900&q=85',
+      intro: 'Contour surveys generate precise topographic maps showing lines of equal elevation, essential for understanding how water flows across a site. Our team provides contour surveys at intervals from 0.25m to 5m depending on project needs — from urban plot drainage to large-scale watershed and irrigation projects.',
+      features: [
+        { icon: '🌊', title: 'Drainage Design Data', desc: 'Slope analysis and flow direction maps for stormwater management.' },
+        { icon: '🌾', title: 'Irrigation Channel Alignment', desc: 'Gravity-based channel siting for maximum irrigation efficiency.' },
+        { icon: '⛰️', title: 'Watershed Analysis', desc: 'Catchment delineation and sub-basin mapping for water resources.' },
+        { icon: '📐', title: 'Cut & Fill Volumes', desc: 'Earthwork calculations for site levelling and embankment design.' },
+      ],
+      tags: ['0.25m–5m Contour Intervals', 'Drainage Analysis', 'Watershed Mapping', 'Irrigation Design', 'Cut & Fill Volumes', 'Flood Zone Mapping']
+    },
+    bandh: {
+      title: 'Field Bandh Survey',
+      subtitle: 'Agricultural Land Division & Bund Mapping',
+      img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=900&q=85',
+      intro: 'Field Bandh surveys are specialised agricultural surveys for dividing khasra parcels, mapping field bunds (boundaries), locating irrigation channels, and recording patta details. We work directly with farmers, gram panchayats, and state agriculture and revenue departments across rural India.',
+      features: [
+        { icon: '🌾', title: 'Khasra Sub-Division', desc: 'Official parcel splitting with RTC-compatible maps for mutation records.' },
+        { icon: '🏞️', title: 'Bund Location Mapping', desc: 'Field bund positions recorded with GPS for dispute resolution.' },
+        { icon: '💧', title: 'Canal & Nala Survey', desc: 'Irrigation channel alignment, cross-sections, and flow measurement.' },
+        { icon: '📜', title: 'Panchayat Documentation', desc: 'Village map updates and patta record linkage for gram sabha submissions.' },
+      ],
+      tags: ['Khasra Parcel Division', 'Bund Mapping', 'Canal Alignment', 'Irrigation Planning', 'Panchayat Records', 'Revenue Mutation']
+    }
+  };
+
+  function openModal(key) {
+    const s = services[key];
+    document.getElementById('modalImg').src = s.img;
+    document.getElementById('modalImg').alt = s.title;
+    document.getElementById('modalTitle').textContent = s.title;
+    document.getElementById('modalSubtitle').textContent = s.subtitle;
+    document.getElementById('modalIntro').textContent = s.intro;
+    document.getElementById('modalFeatures').innerHTML = s.features.map(f =>
+      `<div class="modal-feat"><div class="modal-feat-icon">${f.icon}</div><div><strong>${f.title}</strong><span>${f.desc}</span></div></div>`
+    ).join('');
+    document.getElementById('modalTags').innerHTML = s.tags.map(t =>
+      `<span class="modal-tag">${t}</span>`
+    ).join('');
+    document.getElementById('modalBackdrop').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('modalBox').scrollTop = 0;
+  }
+
+  function closeModal() {
+    document.getElementById('modalBackdrop').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeModalOutside(e) {
+    if (e.target === document.getElementById('modalBackdrop')) closeModal();
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  /* CONTACT FORM */
+  function submitForm() { alert('Thank you for your enquiry! Our team will contact you within 24 hours.'); }
+
+  /* SCROLL REVEAL */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; } });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.svc-card, .why-card, .testi-card, .step').forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(22px)';
+    el.style.transition = `opacity 0.5s ${i * 0.06}s ease, transform 0.5s ${i * 0.06}s ease`;
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
